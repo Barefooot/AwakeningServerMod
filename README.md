@@ -1,2 +1,2 @@
-# Awakening
-Public mod with selected parts of the Awakening server.
+# Awakening Server Mod
+Public mod with selected parts from the Awakening Server.
