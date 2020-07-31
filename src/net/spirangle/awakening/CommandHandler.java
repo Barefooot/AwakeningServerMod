@@ -139,7 +139,7 @@ public class CommandHandler {
             if(m.find()) {
                 if(m.group(1)!=null) {
                     String cmd = m.group(1);
-                    if(cmd.equals("reload")) reloadConfig(performer);
+                    if(cmd.equals("reloadAwakening")) reloadConfig(performer,"awakening");
                     else if(cmd.equals("bml")) {
                         int w = 550;
                         int h = 550;
@@ -151,7 +151,7 @@ public class CommandHandler {
                 }
             } else {
                 communicator.sendSafeServerMessage("Config command usage:");
-                communicator.sendSafeServerMessage("#config reload  -- reload the awakening.properties file");
+                communicator.sendSafeServerMessage("#config reloadAwakening  -- reload the awakening.properties file");
                 communicator.sendSafeServerMessage("#config bml  -- open a BML editor");
             }
         } catch(Exception e) {
@@ -744,8 +744,8 @@ public class CommandHandler {
         return MessagePolicy.DISCARD;
     }
 
-    public boolean reloadConfig(Player performer) {
-        Path path = Paths.get("mods/awakening.properties");
+    public boolean reloadConfig(Player performer,String mod) {
+        Path path = Paths.get("mods/"+mod+".properties");
         if(!Files.exists(path)) {
             performer.getCommunicator().sendAlertServerMessage("The config file seems to be missing.");
             return true;
