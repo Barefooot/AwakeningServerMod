@@ -34,7 +34,7 @@ public class LeaderBoardQuestion extends Question {
 
     private static final Logger logger = Logger.getLogger(LeaderBoardQuestion.class.getName());
 
-    private class TopTenPlayer {
+    private static class TopTenPlayer {
         long wurmId;
         int score;
         String name;

@@ -354,7 +354,7 @@ public class CommandHandler {
                 }
             } else {
                 communicator.sendSafeServerMessage("PvP command usage:");
-                communicator.sendSafeServerMessage("#pvp <name> <remove>  -- remove PvP setting from a player");
+                communicator.sendSafeServerMessage("#pvp <name> remove  -- remove PvP setting from a player");
             }
         } catch(Exception e) {
             logger.log(Level.SEVERE,"PvP command error: "+e.getMessage(),e);
