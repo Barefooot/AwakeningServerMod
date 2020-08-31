@@ -7,6 +7,7 @@ import net.spirangle.awakening.actions.LowerCeilingCornerAction;
 import net.spirangle.awakening.actions.SettingsAction;
 import net.spirangle.awakening.items.InventorySupplier;
 import net.spirangle.awakening.items.ItemTemplateCreatorAwakening;
+import net.spirangle.awakening.items.Vehicle;
 import net.spirangle.awakening.players.PlayersData;
 import net.spirangle.awakening.time.Scheduler;
 import org.gotti.wurmunlimited.modloader.interfaces.*;
@@ -70,6 +71,9 @@ public class AwakeningMod implements WurmServerMod, Configurable, PreInitable, I
         if(Config.usePlayerSettings) {
             ModActions.registerAction(new SettingsAction());
             PlayersData.getInstance().loadPlayersData();
+        }
+        if(Config.useDecayAbandonedLocks) {
+            Vehicle.decayAbandonedLocks();
         }
     }
 

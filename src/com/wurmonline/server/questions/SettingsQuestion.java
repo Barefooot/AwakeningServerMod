@@ -1,9 +1,12 @@
 package com.wurmonline.server.questions;
 
 import com.wurmonline.server.MiscConstants;
+import com.wurmonline.server.Server;
+import com.wurmonline.server.Servers;
 import com.wurmonline.server.players.Player;
 import com.wurmonline.server.villages.Village;
 import com.wurmonline.server.villages.Villages;
+import net.spirangle.awakening.Config;
 import net.spirangle.awakening.players.LeaderBoard;
 import net.spirangle.awakening.players.PlayerData;
 import net.spirangle.awakening.players.PlayersData;
@@ -45,17 +48,23 @@ public class SettingsQuestion extends Question {
            .append("  varray{rescale='true';\n")
            .append("   passthrough{id='id';text='").append(getId()).append("'};\n")
            .append("   text{text=''}\n");
-        if(pd.isPvP()) bml.append("   text{type='bold';text=\"You have the PvP settings checked\";hover=\"This means you are playing with PvP rules all the time. Only a GM can remove this setting.\"}\n");
-        else bml.append("   checkbox{id='pvp';text=\"Play with PvP settings (cannot uncheck once set)\";hover=\"This setting will say to other players that you play by PvP rules all the time.\"}\n");
-        bml.append("   checkbox{id='lbhide';").append(lb.isHidden()? "selected='true'" : "").append("text=\"Hide my name on leaderboards\";hover=\"Individual settings on each leaderboard overrides this setting.\"}\n")
-           .append("   text{text=''}\n")
-           .append("   checkbox{id='crossKingdom';").append(player.hasFlag(MiscConstants.FLAG_CROSS_KINGDOM)? "selected='true'" : "").append("text=\"Permit cross kingdom PMs\";hover=\"This can also be set in the profile-settings.\"}\n");
+        if(Servers.isThisAPvpServer()) {
+            if(pd.isPvP())
+                bml.append("   text{type='bold';text=\"You have the PvP settings checked\";hover=\"This means you are playing with PvP rules all the time. Only a GM can remove this setting.\"}\n");
+            else
+                bml.append("   checkbox{id='pvp';text=\"Play with PvP settings (cannot uncheck once set)\";hover=\"This setting will say to other players that you play by PvP rules all the time.\"}\n");
+        }
+        if(Config.useLeaderBoard) {
+            bml.append("   checkbox{id='lbhide';").append(lb.isHidden()? "selected='true'" : "").append("text=\"Hide my name on leaderboards\";hover=\"Individual settings on each leaderboard overrides this setting.\"}\n");
+        }
         Village village = Villages.getVillageForCreature(player);
         if(village!=null && village.isMayor(player)) {
             bml.append("   text{text=''}\n")
-               .append("   text{type='bold';text='Being mayor of a village, you have extra settings:'}\n")
-               .append("   checkbox{id='deedfarm';").append(pd.isDeedFarming()? "selected='true'" : "").append("text=\"Farm growth only when tended\";hover=\"Farm tiles on deed will only grow when they are tended.\"}\n")
-               .append("   harray{\n")
+               .append("   text{type='bold';text='Being mayor of a village, you have extra settings:'}\n");
+            if(Config.useFarmGrowthWhenTended) {
+                bml.append("   checkbox{id='deedfarm';").append(pd.isDeedFarming()? "selected='true'" : "").append("text=\"Farm growth only when tended\";hover=\"Farm tiles on deed will only grow when they are tended.\"}\n");
+            }
+            bml.append("   harray{\n")
                .append("    text{size='120,17';text='Deed visibility:'};\n")
                .append("    dropdown{id='deedvis';size='250,15';default='").append(pd.getDeedVisibility()).append("';options=\"show deed on map viewer,hide name,hide name and border,hide terraforming to perimiter\";hover=\"How to display your deed on the map viewer, on the web page.\"}\n")
                .append("   }");
@@ -88,11 +97,16 @@ public class SettingsQuestion extends Question {
         Player player = target!=null && responder.getPower() >= MiscConstants.POWER_DEMIGOD? target : responder;
         boolean changed = false;
         PlayerData pd = PlayersData.getInstance().get(player);
-        LeaderBoard lb = pd.getLeaderBoard();
-        if("true".equals(properties.getProperty("pvp","false"))) changed = pd.setPvP(true) || changed;
-        changed = lb.setHidden("true".equals(properties.getProperty("lbhide","false"))) || changed;
-        changed = setPlayerFlag(player,MiscConstants.FLAG_CROSS_KINGDOM,"true".equals(properties.getProperty("crossKingdom","false"))) || changed;
-        changed = pd.setNoDeedFarming(!"true".equals(properties.getProperty("deedfarm","true"))) || changed;
+        if(Servers.isThisAPvpServer()) {
+            if("true".equals(properties.getProperty("pvp","false"))) changed = pd.setPvP(true) || changed;
+        }
+        if(Config.useLeaderBoard) {
+            LeaderBoard lb = pd.getLeaderBoard();
+            changed = lb.setHidden("true".equals(properties.getProperty("lbhide","false"))) || changed;
+        }
+        if(Config.useFarmGrowthWhenTended) {
+            changed = pd.setNoDeedFarming(!"true".equals(properties.getProperty("deedfarm","true"))) || changed;
+        }
         if(properties.containsKey("deedvis")) {
             changed = pd.setDeedVisibility(Integer.parseInt(properties.getProperty("deedvis"))) || changed;
         }
@@ -111,11 +125,5 @@ public class SettingsQuestion extends Question {
                 }
             }
         }
-    }
-
-    private boolean setPlayerFlag(final Player player,int flag,boolean set) {
-        if(player.hasFlag(flag)==set) return false;
-        player.setFlag(flag,set);
-        return true;
     }
 }

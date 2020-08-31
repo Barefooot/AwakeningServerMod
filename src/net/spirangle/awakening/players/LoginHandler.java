@@ -1,6 +1,8 @@
 package net.spirangle.awakening.players;
 
 import com.wurmonline.server.DbConnector;
+import com.wurmonline.server.MiscConstants;
+import com.wurmonline.server.Players;
 import com.wurmonline.server.Servers;
 import com.wurmonline.server.creatures.Communicator;
 import com.wurmonline.server.kingdom.Kingdom;
@@ -10,6 +12,7 @@ import com.wurmonline.server.players.PlayerInfo;
 import com.wurmonline.server.players.PlayerInfoFactory;
 import com.wurmonline.server.steam.SteamId;
 import com.wurmonline.server.utils.DbUtilities;
+import net.spirangle.awakening.Config;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -42,6 +45,39 @@ public class LoginHandler {
    private LoginHandler() {
        mainBySteamId = new HashMap<>();
    }
+
+    @SuppressWarnings("unused")
+    public static String playerLoginTest(final String name,final String password,final String steamIDAsString) {
+        final SteamId steamId = SteamId.fromAnyString(steamIDAsString);
+        logger.info("LoginHandler: name="+name+", password="+password+", steamIDAsString="+steamIDAsString+", steamId="+steamId.getSteamID64());
+        PlayerInfo playerInfo = PlayerInfoFactory.getPlayerInfoWithName(name);
+        if(playerInfo==null) return null;
+        try {
+            playerInfo.load();
+            if(playerInfo.getPower() >= MiscConstants.POWER_DEMIGOD) return null;
+        } catch(IOException ioe) {}
+
+        if(Config.useOneCharacterPerSteamId) {
+            final Map<String,Player> players = Players.getInstance().getPlayerMap();
+            for(Player p : players.values()) {
+                if(p.getPower()<MiscConstants.POWER_DEMIGOD && steamId.equals(p.getSteamId()) && !p.getName().equals(name) && p.isFullyLoaded()) {
+                    return "This server permits one character at the same time, per steam ID.";
+                }
+            }
+        } else if(Config.useCharactersOnlySameKingdom) {
+            PlayerInfo main = getInstance().getMainPlayerInfo(playerInfo,steamId);
+            if(playerInfo.wurmId!=main.wurmId) {
+                if(main.getPower() >= MiscConstants.POWER_DEMIGOD) return null;
+                if(playerInfo.getChaosKingdom()!=main.getChaosKingdom()) {
+                    PlayerData pd = PlayersData.getInstance().get(playerInfo.wurmId);
+                    if(pd.isKingdomChangeLoginDone()) {
+                        return "You may not login with an alt being citizen of a different kingdom than your main character.";
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     @SuppressWarnings("unused")
     public static void sendPvPList(final Player player) {

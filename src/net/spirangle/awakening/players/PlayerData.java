@@ -18,6 +18,7 @@ public class PlayerData implements JSONString {
 
     private static final long FLAG_PVP                   = 0x0000000000000002L;
     private static final long FLAG_NO_DEED_FARMING       = 0x0000000000001000L;
+    private static final long FLAG_KINGDOM_CHANGE_LOGIN  = 0x0010000000000000L;
 
     @SuppressWarnings("unused")
     public static String getHoverText(final Player player,final String hoverText) {
@@ -139,5 +140,15 @@ public class PlayerData implements JSONString {
 
     public boolean isNoDeedFarming() {
         return (flags&FLAG_NO_DEED_FARMING)!=0;
+    }
+
+    public boolean setKingdomChangeLogin(boolean login) {
+        if(login==isKingdomChangeLoginDone()) return false;
+        flags ^= FLAG_KINGDOM_CHANGE_LOGIN;
+        return changed = true;
+    }
+
+    public boolean isKingdomChangeLoginDone() {
+        return (flags&FLAG_KINGDOM_CHANGE_LOGIN)!=0;
     }
 }
