@@ -12,7 +12,7 @@ public class Config implements Configurable {
 
     private static final Logger logger = Logger.getLogger(Config.class.getName());
 
-    public static boolean useCommandHandler = true;
+    public static boolean useCommandHandler = false;
     public static boolean handleCommandConfig = false;
     public static boolean handleCommandRestore = false;
     public static boolean handleCommandAlts = false;
@@ -69,13 +69,18 @@ public class Config implements Configurable {
     public static boolean antiMacroPunishing = false;
     public static long antiMacroPatternedActionTime = 30;
     public static int antiMacroPatternedActions = 100;
-    public static int antiMacroRobotQuestionCounter = 30;
     public static int antiMacroRobotActionsCounter = 10;
     public static long antiMacroRobotTestTimeMin = 120;
     public static long antiMacroRobotTestTimeMax = 240;
     public static long antiMacroRobotPunishTime = 10;
     public static int antiMacroRandomActionsMin = 1000;
     public static int antiMacroRandomActionsMax = 2000;
+
+    public static boolean useDecayAbandonedLocks = false;
+    public static long decayAbandonedLocksDays = 90L;
+    public static boolean decayAbandonedLocksPVEOnly = false;
+    public static boolean decayAbandonedLocksUnplant = false;
+    public static boolean useClaimByEmbarkUnlockedVehicle = false;
 
     public static boolean usePlagues = false;
     public static int plagueRadius = 50;
@@ -155,13 +160,18 @@ public class Config implements Configurable {
         antiMacroPunishing = Boolean.parseBoolean(properties.getProperty("antiMacroPunishing","false"));
         antiMacroPatternedActionTime = Long.parseLong(properties.getProperty("antiMacroPatternedActionTime","300"));
         antiMacroPatternedActions = Integer.parseInt(properties.getProperty("antiMacroPatternedActions","100"));
-        antiMacroRobotQuestionCounter = Integer.parseInt(properties.getProperty("antiMacroRobotQuestionCounter","30"));
         antiMacroRobotActionsCounter = Integer.parseInt(properties.getProperty("antiMacroRobotActionsCounter","10"));
         antiMacroRobotTestTimeMin = Long.parseLong(properties.getProperty("antiMacroRobotTestTimeMin","120"));
         antiMacroRobotTestTimeMax = Long.parseLong(properties.getProperty("antiMacroRobotTestTimeMax","240"));
         antiMacroRobotPunishTime = Long.parseLong(properties.getProperty("antiMacroRobotPunishTime","10"));
         antiMacroRandomActionsMin = Integer.parseInt(properties.getProperty("antiMacroRandomActionsMin","1000"));
         antiMacroRandomActionsMax = Integer.parseInt(properties.getProperty("antiMacroRandomActionsMax","2000"));
+
+        useDecayAbandonedLocks = Boolean.parseBoolean(properties.getProperty("useDecayAbandonedLocks","false"));
+        decayAbandonedLocksDays = Long.parseLong(properties.getProperty("decayAbandonedLocksDays","90"));
+        decayAbandonedLocksPVEOnly = Boolean.parseBoolean(properties.getProperty("decayAbandonedLocksPVEOnly","false"));
+        decayAbandonedLocksUnplant = Boolean.parseBoolean(properties.getProperty("decayAbandonedLocksUnplant","false"));
+        useClaimByEmbarkUnlockedVehicle = Boolean.parseBoolean(properties.getProperty("useClaimByEmbarkUnlockedVehicle","false"));
 
         usePlagues = Boolean.parseBoolean(properties.getProperty("usePlagues","false"));
         plagueRadius = Integer.parseInt(properties.getProperty("plagueRadius","50"));

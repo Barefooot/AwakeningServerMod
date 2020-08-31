@@ -382,5 +382,11 @@ public class CodeInjections {
                 }
             });
         }
+
+        if(Config.useClaimByEmbarkUnlockedVehicle) {
+            /* Seat: */
+            final Syringe seat = Syringe.getClass("com.wurmonline.server.behaviours.Seat");
+            seat.insertBefore("occupy","net.spirangle.awakening.items.Vehicle.occupySeat($0,$1,$2);",null);
+        }
     }
 }
