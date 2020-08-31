@@ -21,9 +21,9 @@ public class CodeInjections {
             server.insertAfter("run","net.spirangle.awakening.time.Scheduler.handleServerLag(com.wurmonline.server.Server.secondsLag);",null);
         }
 
+        /* LoginHandler: */
+        final Syringe lh = Syringe.getClass("com.wurmonline.server.LoginHandler");
         if(Config.useAcceptLoginDifferentIPs) {
-            /* LoginHandler: */
-            final Syringe lh = Syringe.getClass("com.wurmonline.server.LoginHandler");
             lh.instrument("reallyHandle",new ExprEditor() {
                 @Override
                 public void edit(MethodCall mc) throws CannotCompileException {
@@ -33,6 +33,21 @@ public class CodeInjections {
                     }
                 }
             });
+        }
+        if(Config.useOneCharacterPerSteamId || Config.useCharactersOnlySameKingdom) {
+            lh.insertBefore("login",
+                            "{\n"+
+                            "   String text = net.spirangle.awakening.players.LoginHandler.playerLoginTest($1,$2,$6);\n"+
+                            "   if(text!=null) {\n"+
+                            "      try {\n"+
+                            "         com.wurmonline.server.Server.getInstance().steamHandler.EndAuthSession(steamIDAsString);\n"+
+                            "         sendLoginAnswer(false,text,0.0f,0.0f,0.0f,0.0f,0,\"model.player.broken\",(byte)0,0);\n"+
+                            "      } catch(java.io.IOException ioe) {\n"+
+                            "         com.wurmonline.server.LoginHandler.logger.log(java.util.logging.Level.WARNING,this.conn.getIp()+\", problem sending login denied message: \"+text,ioe);\n"+
+                            "      }\n"+
+                            "      return;\n"+
+                            "   }\n"+
+                            "}",null);
         }
 
         /* Player: */

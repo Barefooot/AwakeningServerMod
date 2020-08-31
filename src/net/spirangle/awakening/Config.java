@@ -62,6 +62,8 @@ public class Config implements Configurable {
     public static boolean useVillagePermissionsPvEzone = false;
     public static boolean useCanPlantMarkerBlessed = false;
     public static boolean useOldSkillMeditation = false;
+    public static boolean useOneCharacterPerSteamId = false;
+    public static boolean useCharactersOnlySameKingdom = false;
 
     public static int serverLagReportTime = 30;
 
@@ -152,6 +154,8 @@ public class Config implements Configurable {
         useVillagePermissionsPvEzone = Boolean.parseBoolean(properties.getProperty("useVillagePermissionsPvEzone","false"));
         useCanPlantMarkerBlessed = Boolean.parseBoolean(properties.getProperty("useCanPlantMarkerBlessed","false"));
         useOldSkillMeditation = Boolean.parseBoolean(properties.getProperty("useOldSkillMeditation","false"));
+        useOneCharacterPerSteamId = Boolean.parseBoolean(properties.getProperty("useOneCharacterPerSteamId","false"));
+        useCharactersOnlySameKingdom = Boolean.parseBoolean(properties.getProperty("useCharactersOnlySameKingdom","false"));
 
         useHandleServerLag = Boolean.parseBoolean(properties.getProperty("useHandleServerLag","false"));
         serverLagReportTime = Integer.parseInt(properties.getProperty("serverLagReportTime","30"));
@@ -181,7 +185,7 @@ public class Config implements Configurable {
         useInventorySupplier = Boolean.parseBoolean(properties.getProperty("useInventorySupplier","false"));
         List<Long> kingdomTradersList = new ArrayList<>();
         for(int i = 0; true; ++i) {
-            String s = properties.getProperty("kingdomTrader_"+i);
+            String s = properties.getProperty("kingdomTrader_"+(i+1));
             if(s==null) break;
             kingdomTradersList.add(Long.parseLong(s));
         }
