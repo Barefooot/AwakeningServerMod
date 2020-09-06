@@ -7,6 +7,7 @@ import com.wurmonline.server.items.*;
 import com.wurmonline.server.skills.SkillList;
 import com.wurmonline.shared.constants.IconConstants;
 import com.wurmonline.shared.constants.ItemMaterials;
+import net.spirangle.awakening.Config;
 import org.gotti.wurmunlimited.modloader.ReflectionUtil;
 
 import java.io.IOException;
@@ -18,8 +19,19 @@ public class ItemTemplateCreatorAwakening {
 
     private static final Logger logger = Logger.getLogger(ItemTemplateCreatorAwakening.class.getName());
 
+    public static final int bulkChest = 93501;
     public static final int diamondLens = 3504;
     public static final int brassTube = 3505;
+
+    public static final int coffeeBean = 93601;
+    public static final int coffeeGround = 93602;
+    public static final int coffee = 93603;
+    public static final int espresso = 93604;
+    public static final int peanut = 93621;
+    public static final int peanutButter = 93622;
+    public static final int tabasco = 93631;
+    public static final int toffeeApple = 93641;
+    public static final int cocktail = 93651;
 
     public static final int clayGardenGnome = 3801;
     public static final int clayGardenGnomeGreen = 3802;
@@ -29,6 +41,188 @@ public class ItemTemplateCreatorAwakening {
 
     public static void initItemTemplates() {
         try {
+
+            /* Bulk Chest: */
+            if(Config.useBulkChest) {
+                final ItemTemplate bc = ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.bulkChest,3,
+                    "bulk chest","bulk chests","almost full","somewhat occupied","half-full","emptyish",
+                    "A sturdy chest made from planks and strengthened with iron ribbons.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_NAMED,
+                        ItemTypes.ITEM_TYPE_OWNER_DESTROYABLE,
+                        ItemTypes.ITEM_TYPE_NOTAKE,
+                        ItemTypes.ITEM_TYPE_WOOD,
+                        ItemTypes.ITEM_TYPE_TURNABLE,
+                        ItemTypes.ITEM_TYPE_DECORATION,
+                        ItemTypes.ITEM_TYPE_REPAIRABLE,
+                        ItemTypes.ITEM_TYPE_LOCKABLE,
+                        ItemTypes.ITEM_TYPE_HOLLOW,
+                        ItemTypes.ITEM_TYPE_BULKCONTAINER,
+                        ItemTypes.ITEM_TYPE_TRANSPORTABLE,
+                        ItemTypes.ITEM_TYPE_HASDATA,
+                        ItemTypes.ITEM_TYPE_PLANTABLE,
+                        ItemTypes.ITEM_TYPE_USES_SPECIFIED_CONTAINER_VOLUME
+                    },
+                    (short)IconConstants.ICON_CONTAINER_CHEST_LARGE,
+                    BehaviourList.itemBehaviour,0,9072000L,80,70,120,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.furniture.wooden.coffer.",40.0f,100000,ItemMaterials.MATERIAL_WOOD_BIRCH,10000,true,-1);
+                bc.setContainerSize(30,50,200);
+                logger.info("Created template for: bulk chest ["+ItemTemplateCreatorAwakening.bulkChest+"]");
+            }
+
+            if(Config.useRecipeItems) {
+                /* Coffee Items: */
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.coffeeBean,
+                    "coffee bean","coffee beans","excellent","good","ok","poor",
+                    "A coffee seed, commonly called coffee bean, is a seed of the coffee plant, and is the source for coffee.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_BULK,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION,
+                        ItemTypes.ITEM_TYPE_FOOD,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_FOOD_COCOA_BEAN,
+                    BehaviourList.itemBehaviour,0,28800L,2,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.resource.cocoabean.",8.0f,200,ItemMaterials.MATERIAL_VEGETARIAN,100,false);
+                logger.info("Created template for: coffee bean ["+ItemTemplateCreatorAwakening.coffeeBean+"]");
+
+
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.coffeeGround,
+                    "ground coffee","ground coffee","excellent","good","ok","poor",
+                    "Ground and roasted coffee bean.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_BULK,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION,
+                        ItemTypes.ITEM_TYPE_FOOD,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_LIQUID_TANNIN,
+                    BehaviourList.itemBehaviour,0,172800L,2,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.food.cocoa.",15.0f,200,ItemMaterials.MATERIAL_VEGETARIAN,100,false);
+                logger.info("Created template for: ground coffee ["+ItemTemplateCreatorAwakening.coffeeGround+"]");
+
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.coffee,
+                    "coffee","coffee","excellent","good","ok","poor",
+                    "Coffee is a way of stealing time that should by rights belong to your older self.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_LIQUID,
+                        ItemTypes.ITEM_TYPE_LIQUID_COOKING,
+                        ItemTypes.ITEM_TYPE_LIQUID_DRINKABLE,
+                        ItemTypes.ITEM_TYPE_DECAYDESTROYS,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION
+                    },
+                    (short)IconConstants.ICON_LIQUID_TANNIN,
+                    BehaviourList.itemBehaviour,0,172800L,2,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.liquid.tannin.",15.0f,200,ItemMaterials.MATERIAL_VEGETARIAN,100,false);
+                logger.info("Created template for: coffee ["+ItemTemplateCreatorAwakening.coffee+"]");
+
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.espresso,
+                    "espresso","espresso","excellent","good","ok","poor",
+                    "Black as the devil, hot as hell, pure as an angel, sweet as love.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_LIQUID,
+                        ItemTypes.ITEM_TYPE_LIQUID_COOKING,
+                        ItemTypes.ITEM_TYPE_LIQUID_DRINKABLE,
+                        ItemTypes.ITEM_TYPE_DECAYDESTROYS,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION
+                    },
+                    (short)IconConstants.ICON_LIQUID_TANNIN,
+                    BehaviourList.itemBehaviour,0,172800L,2,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.liquid.tannin.",35.0f,1000,ItemMaterials.MATERIAL_VEGETARIAN,100,false);
+                logger.info("Created template for: espresso ["+ItemTemplateCreatorAwakening.espresso+"]");
+
+                /* Peanut: */
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.peanut,
+                    "peanut","peanuts","excellent","good","ok","poor",
+                    "The peanut, also known as the groundnut and the goober, is a legume crop grown mainly for its edible seeds.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_SEED,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION,
+                        ItemTypes.ITEM_TYPE_BULK,
+                        ItemTypes.ITEM_TYPE_FOOD,
+                        ItemTypes.ITEM_TYPE_FRUIT,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_FOOD_PINENUT,
+                    BehaviourList.itemBehaviour,0,86400L,3,4,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.food.pinenuts.",15.0f,200,ItemMaterials.MATERIAL_VEGETARIAN,100,false)
+                                   .setNutritionValues(6730,131,684,137);
+                logger.info("Created template for: peanut ["+ItemTemplateCreatorAwakening.peanut+"]");
+
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.peanutButter,
+                    "peanut butter","peanut butter","excellent","good","ok","poor",
+                    "Peanut butter is a food paste or spread made from ground dry roasted peanuts.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_DISH,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION,
+                        ItemTypes.ITEM_TYPE_BULK,
+                        ItemTypes.ITEM_TYPE_FOOD,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_FOOD_BUTTER,
+                    BehaviourList.itemBehaviour,0,86400L,2,3,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.food.butter.",15.0f,200,ItemMaterials.MATERIAL_VEGETARIAN,100,false);
+                logger.info("Created template for: peanut butter ["+ItemTemplateCreatorAwakening.peanutButter+"]");
+
+                /* Tabasco: */
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.tabasco,
+                    "tabasco","tabasco","excellent","good","ok","poor",
+                    "Tabasco sauce is a brand of hot sauce made exclusively from tabasco peppers.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_LIQUID,
+                        ItemTypes.ITEM_TYPE_LIQUID_COOKING,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION,
+                        ItemTypes.ITEM_TYPE_FERMENTED,
+                        ItemTypes.ITEM_TYPE_DECAYDESTROYS,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_FOOD_KETCHUP,
+                    BehaviourList.itemBehaviour,0,172800L,2,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.resource.passata.",15.0f,600,ItemMaterials.MATERIAL_VEGETARIAN,100,false);
+                logger.info("Created template for: tabasco ["+ItemTemplateCreatorAwakening.tabasco+"]");
+
+                /* Toffee Apple: */
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.toffeeApple,
+                    "toffee apple","toffee apples","delicious","nice","old","rotten",
+                    "Sweet and crunchy apple covered in toffee.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_FOOD,
+                        ItemTypes.ITEM_TYPE_LOWNUTRITION,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_FOOD_APPLE_GREEN,
+                    BehaviourList.itemBehaviour,0,604800L,5,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.food.apple.green.",100.0f,300,ItemMaterials.MATERIAL_VEGETARIAN,10,true);
+                logger.info("Created template for: toffee apple ["+ItemTemplateCreatorAwakening.toffeeApple+"]");
+
+                /* Cocktail: */
+                ItemTemplateCreator.createItemTemplate(
+                    ItemTemplateCreatorAwakening.cocktail,
+                    "cocktail","cocktails","excellent","good","ok","poor",
+                    "You can't buy happiness, but you can prepare a cocktail and that's kind of the same thing.",
+                    new short[]{
+                        ItemTypes.ITEM_TYPE_NAMED,
+                        ItemTypes.ITEM_TYPE_LIQUID,
+                        ItemTypes.ITEM_TYPE_LIQUID_COOKING,
+                        ItemTypes.ITEM_TYPE_LIQUID_DRINKABLE,
+                        ItemTypes.ITEM_TYPE_USES_FOOD_STATE
+                    },
+                    (short)IconConstants.ICON_LIQUID_FRUITJUICE,
+                    BehaviourList.itemBehaviour,0,604800L,2,5,5,-10,MiscConstants.EMPTY_BYTE_PRIMITIVE_ARRAY,
+                    "model.liquid.juice.",30.0f,1000,ItemMaterials.MATERIAL_WATER,100,false);
+                logger.info("Created template for: cocktail ["+ItemTemplateCreatorAwakening.cocktail+"]");
+            }
 
             ItemTemplateCreator.createItemTemplate(
                 ItemTemplateCreatorAwakening.clayGardenGnome,
@@ -227,6 +421,15 @@ public class ItemTemplateCreatorAwakening {
     }
 
     public static void initCreationEntries() {
+        /* Bulk Chest: */
+        final AdvancedCreationEntry bc = CreationEntryCreator.createAdvancedEntry(
+            SkillList.CARPENTRY_FINE,
+            ItemList.ironBand,ItemList.plank,ItemTemplateCreatorAwakening.bulkChest,
+            false,false,0.0f,true,true,CreationCategories.STORAGE);
+        bc.addRequirement(new CreationRequirement(1,ItemList.plank,10,true));
+        bc.addRequirement(new CreationRequirement(2,ItemList.ironBand,3,true));
+        bc.addRequirement(new CreationRequirement(3,ItemList.nailsIronSmall,4,true));
+
         CreationEntryCreator.createMetallicEntries(
             SkillList.SMITHING_ARMOUR_PLATE,
             ItemList.anvilLarge,ItemList.ironBar,ItemList.shoulderPads7,
@@ -382,6 +585,11 @@ public class ItemTemplateCreatorAwakening {
         spyglass.addRequirement(new CreationRequirement(2,ItemList.leather,1,true));
         spyglass.addRequirement(new CreationRequirement(3,ItemTemplateCreatorAwakening.diamondLens,2,true));
 
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean isBulkContainer(Item item) {
+        return item.getTemplateId()==ItemTemplateCreatorAwakening.bulkChest;
     }
 
     static {

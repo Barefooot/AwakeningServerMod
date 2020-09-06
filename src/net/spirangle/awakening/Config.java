@@ -49,6 +49,8 @@ public class Config implements Configurable {
     public static boolean useAcceptingDeityNames = false;
     public static boolean useIsTurnableFix = false;
     public static boolean useIsMoveableFix = false;
+    public static boolean useBulkChest = false;
+    public static boolean useRecipeItems = false;
     public static boolean useCorpseColourCreatureFix = false;
     public static boolean useCorpseSizeCreatureFix = false;
     public static boolean useAdjustSizeByTraits = false;
@@ -141,6 +143,8 @@ public class Config implements Configurable {
         useAcceptingDeityNames = Boolean.parseBoolean(properties.getProperty("useAcceptingDeityNames","false"));
         useIsTurnableFix = Boolean.parseBoolean(properties.getProperty("useIsTurnableFix","false"));
         useIsMoveableFix = Boolean.parseBoolean(properties.getProperty("useIsMoveableFix","false"));
+        useBulkChest = Boolean.parseBoolean(properties.getProperty("useBulkChest","false"));
+        useRecipeItems = Boolean.parseBoolean(properties.getProperty("useRecipeItems","false"));
         useCorpseColourCreatureFix = Boolean.parseBoolean(properties.getProperty("useCorpseColourCreatureFix","false"));
         useCorpseSizeCreatureFix = Boolean.parseBoolean(properties.getProperty("useCorpseSizeCreatureFix","false"));
         useAdjustSizeByTraits = Boolean.parseBoolean(properties.getProperty("useAdjustSizeByTraits","false"));

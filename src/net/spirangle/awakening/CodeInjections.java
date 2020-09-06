@@ -13,6 +13,33 @@ public class CodeInjections {
 
     private static final Logger logger = Logger.getLogger(CodeInjections.class.getName());
 
+
+    public static class IsBulkModifier extends ExprEditor {
+        final Syringe s;
+        final String method;
+        final String target;
+        final int n;
+        int i = 0;
+
+        public IsBulkModifier(Syringe s,String method,String target,int n) {
+            this.s = s;
+            this.method = method;
+            this.target = target;
+            this.n = n;
+        }
+
+        @Override
+        public void edit(final MethodCall mc) throws CannotCompileException {
+            if(mc.getMethodName().equals(method)) {
+                if(n<0 || i==n) {
+                    mc.replace("$_ = (net.spirangle.awakening.items.ItemTemplateCreatorAwakening.isBulkContainer("+target+") || $proceed($$));");
+                    logger.info(s.getCtClass().getName()+": Installed modify "+s.getCtMethod().getName()+" ("+method+"), additional bulk containers ["+mc.getLineNumber()+"].");
+                }
+                ++i;
+            }
+        }
+    }
+
     public static void preInit() {
 
         if(Config.useHandleServerLag) {
@@ -253,20 +280,32 @@ public class CodeInjections {
             deities.setBody("isNameOkay","{ return true; }","fixed accepting deity names for players");
         }
 
-        if(Config.useIsTurnableFix || Config.useIsMoveableFix || Config.useCorpseSizeCreatureFix) {
-            /* Item: */
-            final Syringe item = Syringe.getClass("com.wurmonline.server.items.Item");
-            if(Config.useIsTurnableFix) {
-                item.insertBefore("isTurnable","(Lcom/wurmonline/server/creatures/Creature;)Z","if(!this.isTurnable() && this.canDisableTurning()) { return false; }",null);
-            }
-            if(Config.useIsMoveableFix) {
-                item.insertBefore("isMoveable","if(this.isNoMove() && this.canDisableMoveable()) { return false; }",null);
-            }
-            if(Config.useCorpseSizeCreatureFix) {
-                item.insertBefore("getSizeMod",
-                                  "if(this.getTemplateId()==272) return (float)Math.pow((double)this.getVolume()/(double)this.template.getVolume(), 0.3333333333333333);",
-                                  "Make corpse get same size as creature");
-            }
+        /* Item: */
+        final Syringe item = Syringe.getClass("com.wurmonline.server.items.Item");
+        if(Config.useIsTurnableFix) {
+            item.insertBefore("isTurnable","(Lcom/wurmonline/server/creatures/Creature;)Z","if(!this.isTurnable() && this.canDisableTurning()) { return false; }",null);
+        }
+        if(Config.useIsMoveableFix) {
+            item.insertBefore("isMoveable","if(this.isNoMove() && this.canDisableMoveable()) { return false; }",null);
+        }
+        if(Config.useBulkChest) {
+            item.instrument("moveToItem",new IsBulkModifier(item,"isCrate","target",4));
+        }
+        if(Config.useCorpseSizeCreatureFix) {
+            item.insertBefore("getSizeMod",
+                              "if(this.getTemplateId()==272) return (float)Math.pow((double)this.getVolume()/(double)this.template.getVolume(), 0.3333333333333333);",
+                              "Make corpse get same size as creature");
+        }
+
+        if(Config.useBulkChest) {
+            /* ItemBehaviour: */
+            final Syringe ib = Syringe.getClass("com.wurmonline.server.behaviours.ItemBehaviour");
+            ib.instrument("moveBulkItemAsAction",new IsBulkModifier(ib,"isFood","target",1));
+
+            /* Communicator: */
+            final Syringe comm = Syringe.getClass("com.wurmonline.server.creatures.Communicator");
+            comm.instrument("sendAddToInventory",new IsBulkModifier(comm,"isCrate","parent",1));
+            comm.instrument("sendUpdateInventoryItem","(Lcom/wurmonline/server/items/Item;JI)V",new IsBulkModifier(comm,"isCrate","parent",1));
         }
 
         if(Config.useOffspringNames || Config.useAdjustMilkByTraits || Config.useAdjustWoolByTraits || Config.useBrandNullPointerFix) {
